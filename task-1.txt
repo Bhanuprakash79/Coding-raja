@@ -1,0 +1,89 @@
+import java.util.ArrayList;
+import java.util.List;
+
+class BankAccount {
+    private String accountNumber;
+    private String accountType;
+    private double balance;
+    private List<String> transactionHistory;
+
+    public BankAccount(String accountNumber, String accountType) {
+        this.accountNumber = accountNumber;
+        this.accountType = accountType;
+        this.balance = 0.0;
+        this.transactionHistory = new ArrayList<>();
+    }
+
+    public void deposit(double amount) {
+        if (amount > 0) {
+            balance += amount;
+            transactionHistory.add("Deposit: +$" + amount);
+        }
+    }
+
+    public void withdraw(double amount) {
+        if (amount > 0 && balance >= amount) {
+            balance -= amount;
+            transactionHistory.add("Withdrawal: -$" + amount);
+        }
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public List<String> getTransactionHistory() {
+        return transactionHistory;
+    }
+}
+
+class User {
+    private String username;
+    private String password;
+    private List<BankAccount> accounts;
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+        this.accounts = new ArrayList<>();
+    }
+
+    public void createAccount(String accountNumber, String accountType) {
+        accounts.add(new BankAccount(accountNumber, accountType));
+    }
+
+    public BankAccount getAccount(String accountNumber) {
+        for (BankAccount account : accounts) {
+            if (account.getAccountNumber().equals(accountNumber)) {
+                return account;
+            }
+        }
+        return null;
+    }
+}
+
+public class BankingSystem {
+    public static void main(String[] args) {
+        User user = new User("username", "password");
+
+        user.createAccount("12345", "Savings");
+        user.createAccount("67890", "Checking");
+
+        BankAccount savingsAccount = user.getAccount("12345");
+        BankAccount checkingAccount = user.getAccount("67890");
+
+        savingsAccount.deposit(1000);
+        checkingAccount.deposit(500);
+
+        savingsAccount.withdraw(200);
+        checkingAccount.withdraw(100);
+
+        System.out.println("Savings Account Balance: $" + savingsAccount.getBalance());
+        System.out.println("Checking Account Balance: $" + checkingAccount.getBalance());
+
+        System.out.println("Transaction History for Savings Account:");
+        for (String transaction : savingsAccount.getTransactionHistory()) {
+            System.out.println(transaction);
+        }
+    }
+}
